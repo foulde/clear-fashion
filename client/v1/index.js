@@ -31,10 +31,13 @@ console.log(MY_FAVORITE_BRANDS[0]);
 
 // 🎯 TODO 1: The cheapest t-shirt
 // 0. I have 3 favorite brands stored in MY_FAVORITE_BRANDS variable
-// 1. Create a new variable and assign it the link of the cheapest t-shirt
+// 1. Create a new variable and assign it the link of the cheapest t-shirt #not by making an algorithm 
 // I can find on these e-shops
 // 2. Log the variable
 
+// # the link is https://www.faguo-store.com/fr/vetements/7606-arcy-t-shirt-en-coton-recycle-kaki.html
+cheapest = "https://www.faguo-store.com/fr/vetements/7606-arcy-t-shirt-en-coton-recycle-kaki.html";
+console.log(cheapest);
 /**
  * 👕
  * Easy 😁?
@@ -46,17 +49,37 @@ console.log(MY_FAVORITE_BRANDS[0]);
 
 // 🎯 TODO 2: Number of products
 // 1. Create a variable and assign it the number of products
+let number_of_product = 12;
 // 2. Log the variable
-
+console.log(number_of_product);
 // 🎯 TODO 3: Brands name
 // 1. Create a variable and assign it the list of brands name only
+brands = ["Faguo","Loom" ,"Ecclo" ]
 // 2. Log the variable
+console.log(brands);
 // 3. Log how many brands we have
-
+console.log(`There are ${brands.length} brands.`);
 // 🎯 TODO 4: Sort by price
 // 1. Create a function to sort the marketplace products by price
+function sortProductsByPrice(products) {
+  return products.sort((a, b) => a.price - b.price);
+}
 // 2. Create a variable and assign it the list of products by price from lowest to highest
+let products = [
+  {name: 'Product 1', price: 45.99},
+  {name: 'Product 2', price: 30.99},
+  {name: 'Product 3', price: 60.99},
+  {name: 'Product 4', price: 15.99}
+];
+
+let sortedProducts = products.sort((a, b) => a.price - b.price);
+
+console.log(sortedProducts);
 // 3. Log the variable
+console.log(sortedProductsByPrice);
+
+
+
 
 // 🎯 TODO 5: Sort by date
 // 1. Create a function to sort the marketplace objects by products date
