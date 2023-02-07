@@ -83,7 +83,23 @@ console.log(sortedProductsByPrice);
 
 // 🎯 TODO 5: Sort by date
 // 1. Create a function to sort the marketplace objects by products date
+const marketplace = [
+  { name: 'Product 1', date: '2022-01-01', price: 10 },
+  { name: 'Product 2', date: '2022-02-01', price: 20 },
+  { name: 'Product 3', date: '2021-12-01', price: 5 }
+];
+
+function sortByDate(a, b) {
+  return new Date(a.date) - new Date(b.date);
+}
+
+const sortedMarketplace = marketplace.sort(sortByDate);
 // 2. Create a variable and assign it the list of products by date from recent to old
+const productsByDate = marketplace.sort((a, b) => {
+  return new Date(b.date) - new Date(a.date);
+});
+
+console.log(productsByDate);
 // 3. Log the variable
 
 // 🎯 TODO 6: Filter a specific price range
