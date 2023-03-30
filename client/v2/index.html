@@ -20,8 +20,16 @@
         <select name="page" id="page-select"> </select>
       </div>
       <div id="filters">
-        <span>By reasonable price</span>
-        <span>By recently released</span>
+
+        <div>
+          <label for="recent-products">Recently released (less than 2 weeks):</label>
+          <input type="checkbox" id="recent-products" />
+        </div>
+        <div>
+          <label for="reasonable-price">Reasonable price (less than 50€):</label>
+          <input type="checkbox" id="reasonable-price" />
+        </div>
+
         <div id="brand">
           <label for="brand-select">By brands:</label>
           <select name="brand" id="brand-select"> </select>
@@ -47,6 +55,13 @@
         <span>Number of brands</span>
         <span id="nbBrands">0</span>
       </div>
+
+      <div>
+        <span>Number of recent</span>
+        <span id="nbRecentProducts">0</span>
+      </div>
+      
+
       <div>
         <span>Number of new products</span>
         <span>0</span>
