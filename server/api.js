@@ -95,18 +95,26 @@ app.get('/products/:id', async (req, res) => {
 
 app.get('/products/brands', async (req, res) => {
   try {
-    const brands = await Product.distinct('brand_name');
+    const productsByBrand = await Product.aggregate([
+      {
+        $group: {
+          _id: '$brand_name',
+          products: { $push: '$$ROOT' }
+        }
+      }
+    ]);
 
-    if (!brands || brands.length === 0) {
-      return res.status(404).json({ message: 'No brands found' });
+    if (!productsByBrand || productsByBrand.length === 0) {
+      return res.status(404).json({ message: 'No products found' });
     }
 
-    res.status(200).json(brands);
+    res.status(200).json(productsByBrand);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
   }
 });
+
 
 
 app.get('/products/brand/:brand', async (req, res) => {
