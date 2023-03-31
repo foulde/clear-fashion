@@ -33,13 +33,30 @@ app.get('/', (req, res) => {
 
 app.get('/products', async (req, res) => {
   try {
-    const products = await Product.find({});
+    const limit = parseInt(req.query.limit) || 12;
+    const page = parseInt(req.query.page) || 1;
+    const brand = req.query.brand;
+    const sort = req.query.sort;
+
+    let query = Product.find();
+
+    if (brand) {
+      query = query.where('brand_name', brand);
+    }
+
+    if (sort === 'asc' || sort === 'desc') {
+      query = query.sort({ price: sort });
+    }
+
+    const products = await query.skip((page - 1) * limit).limit(limit);
+
     res.status(200).json(products);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
   }
 });
+
 
 app.post('/products', async (req, res) => {
   try {
