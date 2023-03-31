@@ -97,6 +97,15 @@ mongoose.connect('mongodb+srv://hugodardill:hugodardill@cluster0.meat52d.mongodb
         console.log('Node API is running on port 3000')
     })
     console.log('connected to mongodb')
-}).catch(()=>{
-    console.log(error)
 })
+
+// mongoose.set('strictQuery',false)
+// mongoose.connect('mongodb+srv://hugodardill:hugodardill@cluster0.meat52d.mongodb.net/?retryWrites=true&w=majority')
+// .then(()=>{
+//     app.listen(process.env.PORT || 3000,()=> {
+//         console.log('Node API is running on port 3000')
+//     })
+//     console.log('connected to mongodb')
+// }).catch(()=>{
+//     console.log(error)
+// })
