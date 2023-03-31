@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Product App</h1>
+    </header>
+    <main>
+        <section class="filters">
+            <label for="brand-filter">Filter by Brand:</label>
+            <select id="brand-filter">
+                <option value="">All Brands</option>
+            </select>
+
+            <label for="sort-by-price">Sort by Price:</label>
+            <select id="sort-by-price">
+                <option value="">Default</option>
+                <option value="asc">Lowest to Highest</option>
+                <option value="desc">Highest to Lowest</option>
+            </select>
+        </section>
+
+        <section class="product-list">
+        </section>
+    </main>
+    <script src="app.js"></script>
+</body>
+</html>
