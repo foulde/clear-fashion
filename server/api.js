@@ -1,100 +1,55 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const helmet = require('helmet');
-const Product = require('./models/productModel');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Middleware
+// Connect to MongoDB
+mongoose.connect('mongodb+srv://hugodardill:hugodardill@cluster0.uaokru6.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(error => console.error(error));
+
+// Define the Product schema
+const productSchema = new mongoose.Schema({
+  brand_name: { type: String, required: true },
+  link: { type: String, required: false },
+  img: { type: String, required: true },
+  title: { type: String, required: true },
+  price: { type: String, required: true },
+}, {
+  timestamps: true,
+});
+
+// Create the Product model
+const Product = mongoose.model('Product', productSchema);
+
 app.use(express.json());
 app.use(cors());
-app.use(helmet());
 
-// Routes
+// Define the routes
 app.get('/', (req, res) => {
-  res.send('Hello, world!');
+  res.send('Hello from the API!');
 });
 
-// Create a new product
-app.post('/products', async (req, res) => {
-  try {
-    const product = await Product.create(req.body);
-    res.status(201).json(product);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Retrieve all products
 app.get('/products', async (req, res) => {
   try {
     const products = await Product.find({});
     res.status(200).json(products);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ message: error.message });
   }
 });
 
-// Retrieve a single product by ID
-app.get('/products/:id', async (req, res) => {
+app.post('/products', async (req, res) => {
   try {
-    const { id } = req.params;
-    const product = await Product.findById(id);
-    if (product) {
-      res.status(200).json(product);
-    } else {
-      res.status(404).json({ error: 'Product not found' });
-    }
+    const product = await Product.create(req.body);
+    res.status(200).json(product);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ message: error.message });
   }
 });
 
-// Update a product by ID
-app.put('/products/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const product = await Product.findByIdAndUpdate(id, req.body, { new: true });
-    if (product) {
-      res.status(200).json(product);
-    } else {
-      res.status(404).json({ error: 'Product not found' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Delete a product by ID
-app.delete('/products/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const product = await Product.findByIdAndDelete(id);
-    if (product) {
-      res.status(204).send();
-    } else {
-      res.status(404).json({ error: 'Product not found' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Connect to MongoDB and start the server
-mongoose.connect('mongodb+srv://hugodardill:hugodardill@cluster0.uaokru6.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`Server started on port ${PORT}`);
-    });
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+// Start the server
+app.listen(process.env.PORT || 3000, () => console.log(`Server started on port ${process.env.PORT || 3000}`));
