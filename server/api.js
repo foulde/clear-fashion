@@ -93,6 +93,17 @@ app.get('/products/search', async (req, res) => {
 });
 
 
+app.get('/brands', async (req, res) => {
+  try {
+    const brands = await Product.distinct('brand_name');
+    res.status(200).json(brands);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 app.get('/products/brands', async (req, res) => {
   try {
     const productsByBrand = await Product.aggregate([
