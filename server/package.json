@@ -21,12 +21,7 @@
   },  
   "devDependencies": {
     "nodemon": "^2.0.22"
-  },
-  "scripts": {
-    "api": "node api2.js",
-    "dev": "nodemon api2.js"
-
   }
-
+  
   
 }
