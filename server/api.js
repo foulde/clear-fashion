@@ -88,7 +88,7 @@ app.delete('/products/:id', async (req, res) => {
 });
 
 // Connect to MongoDB and start the server
-mongoose.connect('mongodb+srv://hugodardill:hugodardill@cluster0.uaokru6.mongodb.net/?retryWrites=true&w=majority/products', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb+srv://hugodardill:hugodardill@cluster0.uaokru6.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(PORT, () => {
