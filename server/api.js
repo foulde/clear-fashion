@@ -93,7 +93,7 @@ app.get('/products/:id', async (req, res) => {
   }
 });
 
-app.get('/brands', async (req, res) => {
+app.get('/products/brands', async (req, res) => {
   try {
     const brands = await Product.distinct('brand_name');
 
