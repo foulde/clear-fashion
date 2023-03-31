@@ -1,102 +1,169 @@
-const express =require('express')
-const mongoose= require('mongoose')
-const Product = require('./models/productModel')
-const app= express()
- 
-//express midelware
-app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
 
+const app = express();
 
-// to declare routes
-app.get('/',(req,res)=>{
-    res.send('hello')
-})
+// Connect to MongoDB
+mongoose.connect('mongodb+srv://hugodardill:hugodardill@cluster0.uaokru6.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(error => console.error(error));
 
-//j'ai fait app.get pour tester
-app.get('/brand',(req,res)=>{
-    res.send('there are some brands here')
-})
+// Define the Product schema
+const productSchema = new mongoose.Schema({
+  brand_name: { type: String, required: true },
+  link: { type: String, required: false },
+  img: { type: String, required: true },
+  title: { type: String, required: true },
+  price: { type: String, required: true },
+}, {
+  timestamps: true,
+});
 
+// Create the Product model
+const Product = mongoose.model('Product', productSchema);
 
+app.use(express.json());
+app.use(cors());
 
-//to get data from database
+// Define the routes
+app.get('/', (req, res) => {
+  res.send('Hello from the API!');
+});
 
 app.get('/products', async (req, res) => {
-    try {
-      const products = await Product.find({});
-      res.status(200).json(products);
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).json({ message: error.message });
+  try {
+    const limit = parseInt(req.query.limit) || 12;
+    const page = parseInt(req.query.page) || 1;
+    const brand = req.query.brand;
+    const sort = req.query.sort;
+
+    let query = Product.find();
+
+    if (brand) {
+      query = query.where('brand_name', brand);
     }
-  });
-  
-  // to get a specific product by its id
-  app.get('/products/:id',async(req, res)=>{
-    try{
-        const {id}=req.params;
-        const product= await Product.findById(id);
-        res.status(200).json(product)
-    }catch(error){
-        res.status(500).json({message:error.message})
 
+    if (sort === 'asc' || sort === 'desc') {
+      query = query.sort({ price: sort });
     }
-  })
+
+    const products = await query.skip((page - 1) * limit).limit(limit);
+
+    res.status(200).json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
 
+app.post('/products', async (req, res) => {
+  try {
+    const product = await Product.create(req.body);
+    res.status(200).json(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
-app.post('/products', async(req,res)=>{
-    try{
-        const product= await Product.create(req.body)
-        res.status(200).json(product);
 
-    }catch(error){
-        console.log(error.message)
-        res.status(500).json({message : error.message})
-    
+app.get('/products/search', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 12;
+    const brand = req.query.brand;
+    const price = req.query.price;
 
-    }
-})
+    // Build the query object based on provided filters
+    const query = {};
+    if (brand) query.brand_name = brand;
+    if (price) query.price = { $lte: price };
 
-//update a product
-app.put('/products/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const product = await Product.findById(id);
-      if (!product) {
-        return res.status(404).json({ message: `Cannot find product with ID ${id}` });
-      }
-      const updatedProduct = await Product.findByIdAndUpdate(id, req.body, { new: true });
-      res.status(200).json(updatedProduct);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  });
-  
-// delete product 
-app.delete('/products/:id', async(req, res)=>{
-        try{
-            const {id}= req.params;
-            const product = await Product.findByIdAndDelete(id);
-            if(!product){
-                return res.status(404).json({message: `cannot find product with ID ${id}`});
-            }
-            res.status(200).json(product)
-        }catch(error){
-            res.status(500).json({ message: error.message });
+    // Fetch the products using the query object, limit, and sort by price
+    const products = await Product.find(query)
+      .limit(limit)
+      .sort({ price: 1 });
 
+    res.status(200).json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+app.get('/brands', async (req, res) => {
+  try {
+    const brands = await Product.distinct('brand_name');
+    res.status(200).json(brands);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+app.get('/products/brands', async (req, res) => {
+  try {
+    const productsByBrand = await Product.aggregate([
+      {
+        $group: {
+          _id: '$brand_name',
+          products: { $push: '$$ROOT' }
         }
+      }
+    ]);
 
-})
+    if (!productsByBrand || productsByBrand.length === 0) {
+      return res.status(404).json({ message: 'No products found' });
+    }
 
-mongoose.set('strictQuery',false)
-mongoose.connect('mongodb+srv://hugodardill:hugodardill@cluster0.meat52d.mongodb.net/?retryWrites=true&w=majority')
-.then(()=>{
-    app.listen(3000,()=> {
-        console.log('Node API is running on port 3000')
-    })
-    console.log('connected to mongodb')
-}).catch(()=>{
-    console.log(error)
-})
+    res.status(200).json(productsByBrand);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+app.get('/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+
+
+
+app.get('/products/brand/:brand', async (req, res) => {
+  try {
+    const { brand } = req.params;
+    const products = await Product.find({ brand_name: brand });
+
+    if (!products || products.length === 0) {
+      return res.status(404).json({ message: 'No products found for the specified brand' });
+    }
+
+    res.status(200).json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+
+// Start the server
+app.listen(process.env.PORT || 3000, () => console.log(`Server started on port ${process.env.PORT || 3000}`));

@@ -37,6 +37,7 @@ app.get('/products', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const brand = req.query.brand;
     const sort = req.query.sort;
+    const recent = req.query.recent === 'true';
 
     let query = Product.find();
 
@@ -48,6 +49,12 @@ app.get('/products', async (req, res) => {
       query = query.sort({ price: sort });
     }
 
+    if (recent) {
+      const twoWeeksAgo = new Date();
+      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+      query = query.where('createdAt').gte(twoWeeksAgo);
+    }
+
     const products = await query.skip((page - 1) * limit).limit(limit);
 
     res.status(200).json(products);
@@ -56,6 +63,7 @@ app.get('/products', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
 
 
 app.post('/products', async (req, res) => {
