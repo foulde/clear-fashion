@@ -76,23 +76,6 @@ app.get('/products/search', async (req, res) => {
 });
 
 
-
-app.get('/products/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const product = await Product.findById(id);
-
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    res.status(200).json(product);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
-  }
-});
-
 app.get('/products/brands', async (req, res) => {
   try {
     const productsByBrand = await Product.aggregate([
@@ -114,6 +97,25 @@ app.get('/products/brands', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+
+app.get('/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 
 
 
