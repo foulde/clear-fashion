@@ -45,10 +45,13 @@ app.get('/products', async (req, res) => {
     if (brand) {
       query = query.where('brand_name', brand);
     }
-
+    
     if (sort === 'asc' || sort === 'desc') {
-      query = query.sort({ price: sort });
+      query = query.sort({ price: sort, brand_name: 1 });
     }
+    
+    
+    
 
     if (recent) {
       const twoWeeksAgo = new Date();
