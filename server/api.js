@@ -77,6 +77,20 @@ app.get('/products', async (req, res) => {
     const products = await query.skip((page - 1) * limit).limit(limit);
 
     res.status(200).json(products);
+
+    const productStats = await Product.aggregate([
+      {
+        $group: {
+          _id: null,
+          p50: { $avg: '$price' },
+          p90: { $percentile: ['$price', 90] },
+          p95: { $percentile: ['$price', 95] },
+        },
+      },
+    ]);
+
+    res.status(200).json({ products, stats: productStats[0] });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
