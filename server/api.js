@@ -39,6 +39,7 @@ app.get('/products', async (req, res) => {
     const sort = req.query.sort;
     const recent = req.query.recent === 'true';
     const max_price = req.query.max_price;
+    const sortDate = req.query.sort_date;
 
     let query = Product.find();
 
@@ -46,10 +47,17 @@ app.get('/products', async (req, res) => {
       query = query.where('brand_name', brand);
     }
     
+    // if (sort === 'asc' || sort === 'desc') {
+    //   query = query.sort({ price: sort, brand_name: 1 });
+    // }
     if (sort === 'asc' || sort === 'desc') {
-      query = query.sort({ price: sort, brand_name: 1 });
+      query = query.sort({ price: sort });
     }
-    
+
+    if (sortDate === 'asc' || sortDate === 'desc') {
+      query = query.sort({ createdAt: sortDate });
+    }
+  
     
     
 
@@ -92,6 +100,9 @@ app.post('/products', async (req, res) => {
 });
 
 
+
+
+
 app.get('/products/search', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 12;
@@ -116,6 +127,8 @@ app.get('/products/search', async (req, res) => {
 });
 
 
+
+
 app.get('/brands', async (req, res) => {
   try {
     const brands = await Product.distinct('brand_name');
@@ -126,6 +139,16 @@ app.get('/brands', async (req, res) => {
   }
 });
 
+
+app.get('/products/count', async (req, res) => {
+  try {
+    const count = await Product.countDocuments();
+    res.status(200).json(count);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
 app.get('/products/brands', async (req, res) => {
   try {
