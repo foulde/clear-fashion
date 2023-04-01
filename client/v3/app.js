@@ -1,4 +1,5 @@
 const API_URL = "https://clear-fashion-ecru.vercel.app";
+// const API_URL = "https://clear-fashion-jade.vercel.app";
 const productList = document.querySelector(".product-list");
 const brandFilter = document.getElementById("brand-filter");
 const sortByPrice = document.getElementById("sort-by-price");
@@ -36,6 +37,8 @@ productList.appendChild(productCard);
 });
 
 }
+
+
 
 
 function handleFilterChange() {
