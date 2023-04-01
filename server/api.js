@@ -38,6 +38,7 @@ app.get('/products', async (req, res) => {
     const brand = req.query.brand;
     const sort = req.query.sort;
     const recent = req.query.recent === 'true';
+    const max_price = req.query.max_price;
 
     let query = Product.find();
 
@@ -55,6 +56,10 @@ app.get('/products', async (req, res) => {
       query = query.where('createdAt').gte(twoWeeksAgo);
     }
 
+    if (max_price) {
+      query = query.where('price').lte(parseFloat(max_price));
+    }
+
     const products = await query.skip((page - 1) * limit).limit(limit);
 
     res.status(200).json(products);
@@ -63,6 +68,10 @@ app.get('/products', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+
+
+
 
 
 
