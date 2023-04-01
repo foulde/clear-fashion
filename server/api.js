@@ -57,7 +57,10 @@ app.get('/products', async (req, res) => {
     }
 
     if (max_price) {
-      query = query.where('price').lte(parseFloat(max_price));
+      const maxPriceFloat = parseFloat(max_price);
+      if (!isNaN(maxPriceFloat)) {
+        query = query.where('price').lte(maxPriceFloat);
+      }
     }
 
     const products = await query.skip((page - 1) * limit).limit(limit);
