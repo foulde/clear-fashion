@@ -37,21 +37,23 @@ async function fetchProducts(brand, sortPrice, sortDate, limit, page, price) {
     const response = await fetch(url);
     const products = await response.json();
 
-
-
     productList.innerHTML = "";
     products.forEach(product => {
         const productCard = document.createElement("div");
         productCard.classList.add("product-card");
 
-        productCard.innerHTML = `
+        const productLink = document.createElement("a");
+        productLink.href = product.link; // Set the product link as the anchor's href
+        productLink.target = "_blank"; // Make the link open in a new tab
+
+        productLink.innerHTML = `
         <h3>${product.title}</h3>
         <img src="${product.img}" alt="${product.title}">
         <p>Brand: ${product.brand_name}</p>
         <p>Price: ${product.price}</p>`;
-productList.appendChild(productCard);
-});
-
+        productCard.appendChild(productLink);
+        productList.appendChild(productCard);
+    });
 }
 
 // const response = await fetch(url);
