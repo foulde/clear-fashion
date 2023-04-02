@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Product App</h1>
+    </header>
+    <main>
+        <section class="filters">
+            <label for="show-more">Show more:</label>
+            <select id="show-more">
+                <option value="12">12</option>
+                <option value="24">24</option>
+                <option value="48">48</option>
+            </select>            
+            <label for="brand-filter">Filter by Brand:</label>
+            <select id="brand-filter">
+                <option value="">All Brands</option>
+            </select>
+            <label for="recent-filter">Filter by recent products:</label>
+            <input type="checkbox" id="recent-filter">
+
+            <label for="price-filter">Filter by Price:</label>
+            <select id="price-filter">
+                <option value="">All Prices</option>
+                <option value="50">Less than 50€</option>
+            </select>
+    
+
+
+            <label for="sort-by-price">Sort by Price:</label>
+            <select id="sort-by-price">
+                <option value="">Default</option>
+                <option value="asc">Lowest to Highest</option>
+                <option value="desc">Highest to Lowest</option>
+            </select>
+            <label for="sort-by-date">Sort by Date:</label>
+            <select id="sort-by-date">
+                <option value="">Default</option>
+                <option value="desc">Most Recent</option>
+                <option value="asc">Oldest First</option>
+            </select>
+            <p id="total-products">Total products: <span id="product-count">0</span></p>
+
+            
+
+
+        </section>
+
+        <section class="product-list">
+        </section>
+        <section class="pagination">
+            <button id="prev-page" disabled>Previous</button>
+            <span id="page-info">1</span>
+            <button id="next-page">Next</button>
+        </section>
+    </main>
+    <script src="app.js"></script>
+</body>
+</html>
